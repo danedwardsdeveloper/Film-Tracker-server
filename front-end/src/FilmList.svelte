@@ -7,31 +7,26 @@
 	};
 </script>
 
-<div class="container">
+<div class="flex flex-wrap justify-center mt-10 gap-4">
 	{#each films as film}
-		<div class="card {film.seen ? 'bg-green-100' : 'bg-slate-100'}">
-			<h2>{film.title}, {film.year}</h2>
-			<h3>
-				Rank: {film.rank}<br />
-				Metascore: {film.metascore}
+		<button
+			on:click={() => handleToggle(film._id)}
+			class="card transition ease-in-out
+			{film.seen ? 'bg-green-100' : 'bg-slate-100'}"
+		>
+			<h2 class="font-bold text-xl">
+				{film.title}, {film.year}
+				<span class="text-3xl">{film.seen ? '✅' : '🔲'}</span>
+			</h2>
+			<h3 class="pb-4">
+				Rank: {film.rank} <span class="text-gray-400"> |</span> Metascore: {film.metascore}
 			</h3>
-			<p>{film.description}</p>
-			<p>Status: {film.seen ? 'Seen' : 'Unseen'}</p>
-			<button on:click={() => handleToggle(film._id)}>
-				{film.seen ? 'Unseen' : 'Seen'}
-			</button>
-		</div>
+			<p class="text-justify">{film.description}</p>
+		</button>
 	{/each}
 </div>
 
 <style>
-	.container {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 20px;
-		justify-content: center;
-	}
-
 	.card {
 		display: flex;
 		flex-direction: column;
@@ -55,14 +50,8 @@
 
 	button {
 		cursor: pointer;
-		background: #ff3e00;
-		color: white;
 		border: none;
 		padding: 0.5em 1em;
 		border-radius: 5px;
-	}
-
-	button:hover {
-		background: #e33500;
 	}
 </style>
