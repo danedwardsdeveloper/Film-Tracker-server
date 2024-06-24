@@ -8,7 +8,7 @@ const app = express();
 
 app.use(
 	cors({
-		origin: process.env.CORS_ORIGIN,
+		origin: `https://metacritic-top-100-api.netlify.app/`,
 		methods: ['GET', 'POST'],
 		allowedHeaders: ['Content-Type'],
 	})
