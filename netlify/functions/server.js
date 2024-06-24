@@ -12,6 +12,8 @@ app.use('/.netlify/functions/server', router);
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
+console.log(`MongoDB URI: ${MONGODB_URI}`);
+
 mongoose.connect(MONGODB_URI);
 
 const filmSchema = new mongoose.Schema(
