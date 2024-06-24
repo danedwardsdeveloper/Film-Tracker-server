@@ -1,9 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const basicAuth = require('express-basic-auth');
 const mongoose = require('mongoose');
 const router = express.Router();
 const serverless = require('serverless-http');
 require('dotenv').config();
+
+app.use(cors());
 
 const app = express();
 
