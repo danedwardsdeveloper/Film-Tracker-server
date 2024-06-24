@@ -8,7 +8,7 @@ const app = express();
 
 app.use(
 	cors({
-		origin: 'http://localhost:8080',
+		origin: process.env.CORS_ORIGIN,
 		methods: ['GET', 'POST'],
 		allowedHeaders: ['Content-Type'],
 	})
@@ -39,7 +39,7 @@ app.get('/films', async (req, res) => {
 app.post(
 	'/films/:id/toggle',
 	basicAuth({
-		users: { yourUsername: 'yourPassword' },
+		users: { yourUsername: process.env.BASIC_AUTH_PASSWORD },
 		challenge: true,
 		unauthorizedResponse: (req) => 'Unauthorized',
 	}),

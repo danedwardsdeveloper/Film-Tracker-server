@@ -2,13 +2,18 @@
 	import { onMount } from 'svelte';
 	import axios from 'axios';
 	import FilmList from './FilmList.svelte';
+	require('dotenv').config();
+
+	const serverURI = import.meta.env.SERVER_URI;
+
+	console.log(serverURI);
 
 	let films = [];
 	let filmsSeen = 0;
 
 	const fetchFilms = async () => {
 		try {
-			const response = await axios.get('http://localhost:5001/films');
+			const response = await axios.get(serverURI);
 			films = response.data;
 			calculateFilmsSeen();
 		} catch (error) {
