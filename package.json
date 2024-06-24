@@ -18,6 +18,7 @@
 		"mongoose": "^8.4.3"
 	},
 	"devDependencies": {
-		"express-basic-auth": "^1.2.1"
+		"express-basic-auth": "^1.2.1",
+		"serverless-http": "^3.2.0"
 	}
 }

@@ -2,6 +2,7 @@ const express = require('express');
 const basicAuth = require('express-basic-auth');
 const mongoose = require('mongoose');
 // const cors = require('cors');
+const serverless = require('serverless-http');
 require('dotenv').config();
 
 const app = express();
@@ -82,7 +83,11 @@ app.get('/films/:title', async (req, res) => {
 	}
 });
 
-const port = process.env.PORT || 5001;
-app.listen(port, () => {
-	console.log(`Server running on port ${port}`);
-});
+// const port = process.env.PORT || 5001;
+// app.listen(port, () => {
+// 	console.log(`Server running on port ${port}`);
+// });
+
+app.use('/.netlify/functions/server', router);
+
+module.exports.handler = serverless(app);
