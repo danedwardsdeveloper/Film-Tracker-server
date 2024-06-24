@@ -1,21 +1,14 @@
 const express = require('express');
 const basicAuth = require('express-basic-auth');
 const mongoose = require('mongoose');
-// const cors = require('cors');
+const router = express.Router();
 const serverless = require('serverless-http');
 require('dotenv').config();
 
 const app = express();
 
-// app.use(
-// 	cors({
-// 		origin: `https://metacritic-top-100-api.netlify.app/`,
-// 		methods: ['GET', 'POST'],
-// 		allowedHeaders: ['Content-Type'],
-// 	})
-// );
-
 app.use(express.json());
+app.use('/.netlify/functions/server', router);
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -32,7 +25,7 @@ const filmSchema = new mongoose.Schema(
 
 const Film = mongoose.model('Film', filmSchema, 'top_films');
 
-app.get('/', (req, res) => {
+router.get('/', (req, res) => {
 	res.send(`
 	  <!DOCTYPE html>
 	  <html lang="en">
@@ -49,12 +42,12 @@ app.get('/', (req, res) => {
 	`);
 });
 
-app.get('/films', async (req, res) => {
+router.get('/films', async (req, res) => {
 	const films = await Film.find().sort({ rank: 1 });
 	res.json(films);
 });
 
-app.post(
+router.post(
 	'/films/:id/toggle',
 	basicAuth({
 		users: { yourUsername: process.env.BASIC_AUTH_PASSWORD },
@@ -69,7 +62,7 @@ app.post(
 	}
 );
 
-app.get('/films/:title', async (req, res) => {
+router.get('/films/:title', async (req, res) => {
 	try {
 		const film = await Film.findOne({ title: req.params.title });
 		if (film) {
