@@ -6,9 +6,9 @@ const router = express.Router();
 const serverless = require('serverless-http');
 require('dotenv').config();
 
-app.use(cors());
-
 const app = express();
+
+app.use(cors());
 
 app.use(express.json());
 app.use('/.netlify/functions/server', router);
