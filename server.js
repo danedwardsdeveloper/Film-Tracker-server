@@ -31,7 +31,7 @@ const filmSchema = new mongoose.Schema(
 const Film = mongoose.model('Film', filmSchema, 'top_films');
 
 app.get('/films', async (req, res) => {
-	const films = await Film.find();
+	const films = await Film.find().sort({ rank: 1 });
 	res.json(films);
 });
 

@@ -7,33 +7,51 @@
 	};
 </script>
 
-<ul>
-	{#each films as film (film._id)}
-		<li>
-			<h2>{film.title}</h2>
-			<p>{film.rank}</p>
-			<p>{film.year}</p>
-			<p>{film.metascore}</p>
+<div class="container">
+	{#each films as film}
+		<div class="card">
+			<h2>{film.title}, {film.year}</h2>
+			<h3>
+				Rank: {film.rank}<br />
+				Metascore: {film.metascore}
+			</h3>
 			<p>{film.description}</p>
 			<p>Status: {film.seen ? 'Seen' : 'Unseen'}</p>
 			<button on:click={() => handleToggle(film._id)}>
 				{film.seen ? 'Unseen' : 'Seen'}
 			</button>
-		</li>
+		</div>
 	{/each}
-</ul>
+</div>
 
 <style>
-	ul {
-		list-style-type: none;
-		padding: 0;
+	.container {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 20px;
+		justify-content: center;
 	}
 
-	li {
-		margin: 0.5em 0;
+	.card {
 		display: flex;
+		flex-direction: column;
+		text-align: left;
 		justify-content: space-between;
-		align-items: center;
+		width: 300px;
+		height: min-content;
+		padding: 20px;
+		background-color: #f8f8f8;
+		border: 1px solid #ddd;
+		border-radius: 10px;
+		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+		transition:
+			transform 0.3s,
+			box-shadow 0.3s;
+	}
+
+	.card:hover {
+		transform: translateY(-10px);
+		box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 	}
 
 	button {

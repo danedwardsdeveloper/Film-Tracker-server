@@ -9,7 +9,7 @@
 		try {
 			const response = await axios.get('http://localhost:5001/films');
 			films = response.data;
-			console.log(films);
+			console.log('Fetched films:', films);
 		} catch (error) {
 			console.error('Error fetching films:', error);
 		}
@@ -22,9 +22,10 @@
 	const toggleSeen = async (id) => {
 		try {
 			const response = await axios.post(
-				`http://localhost:5000/films/${id}/toggle`
+				`http://localhost:5001/films/${id}/toggle`
 			);
 			films = films.map((film) => (film._id === id ? response.data : film));
+			console.log('Updated films:', films);
 		} catch (error) {
 			console.error('Error toggling seen status:', error);
 		}
@@ -40,7 +41,6 @@
 	main {
 		text-align: center;
 		padding: 1em;
-		max-width: 800px;
 		margin: 0 auto;
 	}
 </style>
