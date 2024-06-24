@@ -15,7 +15,9 @@
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
 		"mongodb": "^6.7.0",
-		"mongoose": "^8.4.3",
-		"selenium-webdriver": "^4.22.0"
+		"mongoose": "^8.4.3"
+	},
+	"devDependencies": {
+		"express-basic-auth": "^1.2.1"
 	}
 }

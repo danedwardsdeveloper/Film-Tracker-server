@@ -1,4 +1,5 @@
 const express = require('express');
+const basicAuth = require('express-basic-auth');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
@@ -35,12 +36,20 @@ app.get('/films', async (req, res) => {
 	res.json(films);
 });
 
-app.post('/films/:id/toggle', async (req, res) => {
-	const film = await Film.findById(req.params.id);
-	film.seen = !film.seen;
-	await film.save();
-	res.json(film);
-});
+app.post(
+	'/films/:id/toggle',
+	basicAuth({
+		users: { yourUsername: 'yourPassword' },
+		challenge: true,
+		unauthorizedResponse: (req) => 'Unauthorized',
+	}),
+	async (req, res) => {
+		const film = await Film.findById(req.params.id);
+		film.seen = !film.seen;
+		await film.save();
+		res.json(film);
+	}
+);
 
 app.get('/films/:title', async (req, res) => {
 	try {
