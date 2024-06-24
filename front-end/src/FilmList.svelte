@@ -9,7 +9,7 @@
 
 <div class="container">
 	{#each films as film}
-		<div class="card">
+		<div class="card {film.seen ? 'bg-green-100' : 'bg-slate-100'}">
 			<h2>{film.title}, {film.year}</h2>
 			<h3>
 				Rank: {film.rank}<br />
@@ -40,7 +40,6 @@
 		width: 300px;
 		height: min-content;
 		padding: 20px;
-		background-color: #f8f8f8;
 		border: 1px solid #ddd;
 		border-radius: 10px;
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
