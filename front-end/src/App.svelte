@@ -1,30 +1,46 @@
 <script>
-	export let name;
+	import { onMount } from 'svelte';
+	import axios from 'axios';
+	import FilmList from './FilmList.svelte';
+
+	let films = [];
+
+	const fetchFilms = async () => {
+		try {
+			const response = await axios.get('http://localhost:5001/films');
+			films = response.data;
+			console.log(films);
+		} catch (error) {
+			console.error('Error fetching films:', error);
+		}
+	};
+
+	onMount(() => {
+		fetchFilms();
+	});
+
+	const toggleSeen = async (id) => {
+		try {
+			const response = await axios.post(
+				`http://localhost:5000/films/${id}/toggle`
+			);
+			films = films.map((film) => (film._id === id ? response.data : film));
+		} catch (error) {
+			console.error('Error toggling seen status:', error);
+		}
+	};
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<h1>Metacritic's Top 100 Films</h1>
+	<FilmList {films} {toggleSeen} />
 </main>
 
 <style>
 	main {
 		text-align: center;
 		padding: 1em;
-		max-width: 240px;
+		max-width: 800px;
 		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
 	}
 </style>
