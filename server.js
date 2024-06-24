@@ -1,18 +1,18 @@
 const express = require('express');
 const basicAuth = require('express-basic-auth');
 const mongoose = require('mongoose');
-const cors = require('cors');
+// const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 
-app.use(
-	cors({
-		origin: `https://metacritic-top-100-api.netlify.app/`,
-		methods: ['GET', 'POST'],
-		allowedHeaders: ['Content-Type'],
-	})
-);
+// app.use(
+// 	cors({
+// 		origin: `https://metacritic-top-100-api.netlify.app/`,
+// 		methods: ['GET', 'POST'],
+// 		allowedHeaders: ['Content-Type'],
+// 	})
+// );
 
 app.use(express.json());
 
