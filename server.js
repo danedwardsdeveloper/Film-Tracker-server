@@ -16,9 +16,9 @@ const app = express();
 
 app.use(express.json());
 
-const uri = `process.env.MONGODB_URI`;
+const MONGODB_URI = process.env.MONGODB_URI;
 
-mongoose.connect(uri);
+mongoose.connect(MONGODB_URI);
 
 const filmSchema = new mongoose.Schema(
 	{
@@ -30,6 +30,23 @@ const filmSchema = new mongoose.Schema(
 );
 
 const Film = mongoose.model('Film', filmSchema, 'top_films');
+
+app.get('/', (req, res) => {
+	res.send(`
+	  <!DOCTYPE html>
+	  <html lang="en">
+	  <head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Server Status</title>
+	  </head>
+	  <body>
+		<h1>The server is running!</h1>
+		<p>The database connection is ${MONGODB_URI}</p>
+	  </body>
+	  </html>
+	`);
+});
 
 app.get('/films', async (req, res) => {
 	const films = await Film.find().sort({ rank: 1 });
