@@ -6,6 +6,6 @@
 .idea/
 *.log
 .DS_Store
+replacements.txt
 
-# Local Netlify folder
 .netlify
