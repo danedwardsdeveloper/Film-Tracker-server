@@ -14,8 +14,11 @@ app.use(express.json());
 app.use('/.netlify/functions/server', router);
 
 const MONGODB_URI = process.env.MONGODB_URI;
+const NODE_ENV = process.env.NODE_ENV;
+const PORT = process.env.PORT || 5001;
 
 console.log(`MongoDB URI: ${MONGODB_URI}`);
+console.log(`Environment: ${NODE_ENV}`);
 
 mongoose.connect(MONGODB_URI);
 
@@ -81,11 +84,12 @@ router.get('/films/:title', async (req, res) => {
 	}
 });
 
-// const port = process.env.PORT || 5001;
-// app.listen(port, () => {
-// 	console.log(`Server running on port ${port}`);
-// });
-
-app.use('/.netlify/functions/server', router);
-
-module.exports.handler = serverless(app);
+if (NODE_ENV === 'development') {
+	app.use('/', router);
+	app.listen(PORT, () => {
+		console.log(`Server running locally on port ${PORT}`);
+	});
+} else {
+	app.use('/.netlify/functions/server', router);
+	module.exports.handler = serverless(app);
+}

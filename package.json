@@ -1,9 +1,10 @@
 {
-	"name": "mongo-svelte-film-tracker",
+	"name": "Film-Tracker-server",
 	"version": "1.0.0",
-	"main": "server.js",
+	"main": "./netlify/functions/server.js",
 	"scripts": {
-		"run": "server.js",
+		"start": "node ./netlify/functions/server.js",
+		"dev": "nodemon ./netlify/functions/server.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "",
