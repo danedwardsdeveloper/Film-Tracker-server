@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"main": "./netlify/functions/server.js",
 	"scripts": {
-		"start": "node ./netlify/functions/server.js",
+		"start": "nodemon ./netlify/functions/server.js",
 		"dev": "nodemon ./netlify/functions/server.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
@@ -22,7 +22,11 @@
 		"typescript": "^4.9.5"
 	},
 	"devDependencies": {
+		"bcrypt": "^5.1.1",
 		"express-basic-auth": "^1.2.1",
+		"express-rate-limit": "^7.3.1",
+		"helmet": "^7.1.0",
+		"nodemon": "^3.1.4",
 		"serverless-http": "^3.2.0"
 	}
 }
