@@ -7,6 +7,7 @@ const serverless = require('serverless-http');
 const bcrypt = require('bcrypt');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+
 require('dotenv').config();
 
 const app = express();
@@ -18,7 +19,6 @@ app.use(helmet());
 const MONGODB_URI = process.env.MONGODB_URI;
 const NODE_ENV = process.env.NODE_ENV;
 const PORT = process.env.PORT || 5001;
-
 // console.log(`MongoDB URI: ${MONGODB_URI}`);
 // console.log(`Environment: ${NODE_ENV}`);
 
@@ -26,9 +26,13 @@ mongoose.connect(MONGODB_URI);
 
 const filmSchema = new mongoose.Schema(
 	{
+		_id: mongoose.Schema.Types.ObjectId,
 		title: String,
 		year: Number,
+		description: String,
+		metascore: Number,
 		seen: Boolean,
+		rank: Number,
 	},
 	{ collection: 'top_films' }
 );
@@ -53,10 +57,27 @@ router.get('/', (req, res) => {
 });
 
 const users = {
-	Dan: bcrypt.hashSync(process.env.USER_PASSWORD, 10),
+	Dan: bcrypt.hashSync(process.env.DAN_PASSWORD, 10),
+	User2: bcrypt.hashSync(process.env.USER2_PASSWORD, 10),
+	User3: bcrypt.hashSync(process.env.USER3_PASSWORD, 10),
 };
 
-// Rate limiting middleware
+const authorizer = async (username, password) => {
+	console.log('Received username:', username);
+	console.log('Received password:', password);
+
+	const expectedPassword = users[username];
+	if (!expectedPassword) {
+		console.log('Username not found');
+		return false;
+	}
+
+	const passwordMatches = await bcrypt.compare(password, expectedPassword);
+
+	console.log(`Password match: ${passwordMatches}`);
+	return passwordMatches;
+};
+
 const limiter = rateLimit({
 	windowMs: 15 * 60 * 1000,
 	max: 100,
@@ -65,16 +86,22 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-router.post('/login', async (req, res) => {
-	console.log(`Request received.`);
-	const { username, password } = req.body;
-
-	if (users[username] && (await bcrypt.compare(password, users[username]))) {
+router.post(
+	'/login',
+	basicAuth({
+		authorizer,
+		authorizeAsync: true,
+		challenge: true,
+		unauthorizedResponse: (req) => {
+			console.log('Unauthorized access attempt');
+			return 'Unauthorized';
+		},
+	}),
+	(req, res) => {
+		console.log('Login successful');
 		res.json({ message: 'Login successful' });
-	} else {
-		res.status(401).json({ message: 'Invalid credentials' });
 	}
-});
+);
 
 router.get('/films', async (req, res) => {
 	const films = await Film.find().sort({ rank: 1 });
@@ -84,15 +111,36 @@ router.get('/films', async (req, res) => {
 router.post(
 	'/films/:id/toggle',
 	basicAuth({
-		users: { yourUsername: process.env.BASIC_AUTH_PASSWORD },
+		authorizer: (username, password) => {
+			const userMatches = basicAuth.safeCompare(
+				username,
+				process.env.BASIC_AUTH_USERNAME
+			);
+			const passwordMatches = basicAuth.safeCompare(
+				password,
+				process.env.BASIC_AUTH_PASSWORD
+			);
+			return userMatches & passwordMatches;
+		},
 		challenge: true,
 		unauthorizedResponse: (req) => 'Unauthorized',
 	}),
 	async (req, res) => {
-		const film = await Film.findById(req.params.id);
-		film.seen = !film.seen;
-		await film.save();
-		res.json(film);
+		try {
+			console.log(`Toggling seen status for film ID: ${req.params.id}`);
+			const film = await Film.findById(req.params.id);
+			if (!film) {
+				console.log('Film not found');
+				return res.status(404).json({ message: 'Film not found' });
+			}
+			film.seen = !film.seen;
+			await film.save();
+			console.log('Film seen status toggled successfully');
+			res.json(film);
+		} catch (error) {
+			console.error('Error toggling film status:', error);
+			res.status(500).json({ message: 'Error toggling film status', error });
+		}
 	}
 );
 
